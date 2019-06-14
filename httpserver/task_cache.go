@@ -17,10 +17,10 @@ type cacheSuccessOutput struct {
 	Message string `json:"message"`
 }
 
-func (s *HTTPServerService) cacheHandler(execution *service.Execution) (string, interface{}) {
+func (s *HTTPServerService) cacheHandler(execution *service.Execution) (interface{}, error) {
 	var inputs cacheInputs
 	if err := execution.Data(&inputs); err != nil {
-		return errorOutputFrom(err)
+		return nil, err
 	}
 	s.cache(&cache{
 		method:   inputs.Method,
@@ -29,7 +29,7 @@ func (s *HTTPServerService) cacheHandler(execution *service.Execution) (string, 
 		mimeType: inputs.MIMEType,
 		content:  []byte(inputs.Content),
 	})
-	return "success", cacheSuccessOutput{"ok"}
+	return cacheSuccessOutput{"ok"}, nil
 }
 
 func (s *HTTPServerService) cache(c *cache) {

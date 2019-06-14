@@ -14,10 +14,10 @@ type breakCacheSuccessOutput struct {
 	Message string `json:"message"`
 }
 
-func (s *HTTPServerService) breakCacheHandler(execution *service.Execution) (string, interface{}) {
+func (s *HTTPServerService) breakCacheHandler(execution *service.Execution) (interface{}, error) {
 	var inputs breakCacheInputs
 	if err := execution.Data(&inputs); err != nil {
-		return errorOutputFrom(err)
+		return nil, err
 	}
 
 	s.deleteCache(inputs.Method, inputs.Path)
@@ -26,5 +26,5 @@ func (s *HTTPServerService) breakCacheHandler(execution *service.Execution) (str
 		"path":   inputs.Path,
 	}).Info("cache deleted")
 
-	return "success", breakCacheSuccessOutput{"ok"}
+	return breakCacheSuccessOutput{"ok"}, nil
 }

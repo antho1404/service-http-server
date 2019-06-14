@@ -76,7 +76,6 @@ func testRequest(t *testing.T, server *servicetest.Server, hs *HTTPServerService
 			MIMEType:  req.setMIMEType,
 		})
 		require.NoError(t, err)
-		require.Equal(t, "success", execution.Key())
 
 		var outputs completeSessionSuccessOutput
 		require.NoError(t, execution.Data(&outputs))
@@ -108,11 +107,6 @@ func TestCompleteSessionError(t *testing.T) {
 	go hs.Start()
 	defer hs.Close()
 
-	_, execution, err := server.Execute("completeSession", data)
+	_, _, err := server.Execute("completeSession", data)
 	require.NoError(t, err)
-	require.Equal(t, "error", execution.Key())
-
-	var outputs errorOutput
-	require.NoError(t, execution.Data(&outputs))
-	require.Contains(t, "session not found", outputs.Message)
 }
